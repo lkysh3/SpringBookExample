@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -19,7 +20,12 @@ public class UserDaoTest {
 
     @Test
     public void testUserDao() throws ClassNotFoundException, SQLException {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        // xml 파일을 구성정보로 사용한다.
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+
+        // DaoFactory를 사용하는 방식
+        // Configuration 어노테이션이 붙은 클래스를 구성정보로 사용한다.
+//        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         UserDao dao = context.getBean("userDao", UserDao.class);
 
         User user = new User();
