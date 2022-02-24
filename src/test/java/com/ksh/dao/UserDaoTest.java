@@ -20,6 +20,7 @@ public class UserDaoTest {
 
     @Test
     public void testUserDao() throws ClassNotFoundException, SQLException {
+        // xml을 이용한 방식
         // xml 파일을 구성정보로 사용한다.
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
