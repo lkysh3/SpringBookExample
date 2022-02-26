@@ -25,7 +25,7 @@ public class DaoFactory {
 //        dataSource.setPassword("eksxp123");
 
         dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
-        dataSource.setUsername("springtestdb");
+        dataSource.setUsername("springtestdb2");
         dataSource.setPassword("eksxp123");
 
         return dataSource;
