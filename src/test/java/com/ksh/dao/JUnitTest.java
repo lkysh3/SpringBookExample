@@ -1,5 +1,6 @@
 package com.ksh.dao;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class JUnitTest {
         assertThat(testObjects, not(hasItem(this)));
         testObjects.add(this);
 
-        assertThat(contextObject, either(is(nullValue())).or(is(this.context)));
+        assertThat(contextObject, either(is(nullValue())).or(CoreMatchers.<Object>is(this.context)));
         contextObject = this.context;
     }
 }

@@ -19,14 +19,17 @@ public class DaoFactory {
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 
+        // 맥북
         dataSource.setDriverClass(oracle.jdbc.driver.OracleDriver.class);
-//        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
-//        dataSource.setUsername("SpringExample");
-//        dataSource.setPassword("eksxp123");
 
         dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
-        dataSource.setUsername("springtestdb2");
+        dataSource.setUsername("SpringExample");
         dataSource.setPassword("eksxp123");
+
+        // 집
+//        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
+//        dataSource.setUsername("springtestdb2");
+//        dataSource.setPassword("eksxp123");
 
         return dataSource;
     }
