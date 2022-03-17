@@ -2,7 +2,6 @@ package com.ksh.dao;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Connection;
 
