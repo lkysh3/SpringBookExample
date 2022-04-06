@@ -9,6 +9,14 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean id="userGradeUpgradePolicyAtNormal" class="com.ksh.policy.UserGradeUpgradePolicyAtNormal"/>
+    <bean id="userGradeUpgradePolicyAtEvent" class="com.ksh.policy.UserGradeUpgradePolicyAtEvent"/>
+
+    <bean id="userService" class="com.ksh.service.UserService">
+        <property name="userDao" ref="userDao"/>
+        <property name="userGradeUpgradePolicy" ref="userGradeUpgradePolicyAtEvent"/>
+    </bean>
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="oracle.jdbc.driver.OracleDriver"/>
         <property name="url" value="jdbc:oracle:thin:@localhost:1521:XE"/>

@@ -1,8 +1,8 @@
 package com.ksh.dao;
 
+import com.ksh.domain.Grade;
 import com.ksh.domain.User;
 import com.ksh.exception.DuplicateUserIdException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -20,6 +20,9 @@ public class UserDaoJdbc implements UserDao {
             user.setId(resultSet.getString("id"));
             user.setName(resultSet.getString("name"));
             user.setPassword(resultSet.getString("password"));
+            user.setGrade(Grade.valueOf(resultSet.getInt("grade")));
+            user.setLogin(resultSet.getInt("login"));
+            user.setRecommend(resultSet.getInt("recommend"));
             return user;
         }
     };
@@ -32,7 +35,8 @@ public class UserDaoJdbc implements UserDao {
     }
 
     public void add(final User user) throws DuplicateUserIdException {
-        this.jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)", user.getId(), user.getName(), user.getPassword());
+        this.jdbcTemplate.update("insert into users(id, name, password, grade, login, recommend) values(?, ?, ?, ?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend());
     }
 
     public User get(String id) {
@@ -50,5 +54,10 @@ public class UserDaoJdbc implements UserDao {
     public int getCount() {
         // queryForInt는 Deprecated 되었음.
         return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+    }
+
+    public void update(User user) {
+        this.jdbcTemplate.update("update users set name = ?, password = ?, grade = ?, login = ?, recommend = ? where id = ?",
+                user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getId());
     }
 }
