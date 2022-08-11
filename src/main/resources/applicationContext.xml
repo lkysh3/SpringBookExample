@@ -12,9 +12,12 @@
     <bean id="userGradeUpgradePolicyAtNormal" class="com.ksh.policy.UserGradeUpgradePolicyAtNormal"/>
     <bean id="userGradeUpgradePolicyAtEvent" class="com.ksh.policy.UserGradeUpgradePolicyAtEvent"/>
 
-    <bean id="userService" class="com.ksh.service.UserService">
+    <bean id="userService" class="com.ksh.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
-        <property name="userGradeUpgradePolicy" ref="userGradeUpgradePolicyAtEvent"/>
+<!--        <property name="userGradeUpgradePolicy" ref="userGradeUpgradePolicyAtEvent"/>-->
+        <property name="dataSource" ref="dataSource"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="mailSender" ref="mailSender"/>
     </bean>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
@@ -24,5 +27,14 @@
         <!--        <property name="username" value="springtestdb"/>-->
         <property name="password" value="eksxp123"/>
     </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+<!--    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">-->
+<!--        <property name="host" value="mail.server.com"/>-->
+<!--    </bean>-->
+    <bean id="mailSender" class="com.ksh.mail.DummyMailSender"/>
 
 </beans>

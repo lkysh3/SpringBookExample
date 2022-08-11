@@ -7,14 +7,16 @@ public class User {
     Grade grade;
     int login;
     int recommend;
+    String email;
 
-    public User(String id, String name, String password, Grade level, int login, int recommend) {
+    public User(String id, String name, String password, Grade level, int login, int recommend, String email) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.grade = level;
         this.login = login;
         this.recommend = recommend;
+        this.email = email;
     }
 
     public User() {
@@ -67,6 +69,10 @@ public class User {
     public int getRecommend(){
         return recommend;
     }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public String getEmail() { return email; }
 
     public void upgradeGrade(){
         Grade nextGrade = this.grade.nextGrade();

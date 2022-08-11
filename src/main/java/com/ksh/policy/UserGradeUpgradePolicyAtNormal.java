@@ -4,8 +4,8 @@ import com.ksh.dao.UserDao;
 import com.ksh.domain.Grade;
 import com.ksh.domain.User;
 
-import static com.ksh.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static com.ksh.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static com.ksh.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static com.ksh.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 public class UserGradeUpgradePolicyAtNormal implements UserGradeUpgradePolicy{
     UserDao userDao;

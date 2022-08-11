@@ -52,9 +52,9 @@ public class UserDaoTest {
 //        this.dao = this.context.getBean("userDao", UserDao.class);
 
         // 픽스쳐
-        user1 = new User("lkysh3", "곽성훈", "eksxp123", Grade.BASIC, 1, 0);
-        user2 = new User("leegw70", "이길원", "springno2", Grade.SILVER, 55, 10);
-        user3 = new User("bumjin", "박범진", "springno3", Grade.GOLD, 100, 40);
+        user1 = new User("lkysh3", "곽성훈", "eksxp123", Grade.BASIC, 1, 0, "lkysh3@gmail.com");
+        user2 = new User("leegw70", "이길원", "springno2", Grade.SILVER, 55, 10, "leegw70@naver.com");
+        user3 = new User("bumjin", "박범진", "springno3", Grade.GOLD, 100, 40, "bumjin@nate.com");
 
     }
 
@@ -134,6 +134,7 @@ public class UserDaoTest {
         assertThat(user1.getGrade(), is(user2.getGrade()));
         assertThat(user1.getLogin(), is(user2.getLogin()));
         assertThat(user1.getRecommend(), is(user2.getRecommend()));
+        assertThat(user1.getEmail(), is(user2.getEmail()));
     }
 
     @Test(expected = DuplicateKeyException.class)
@@ -170,6 +171,7 @@ public class UserDaoTest {
         user1.setGrade(Grade.GOLD);
         user1.setLogin(1000);
         user1.setRecommend(999);
+        user1.setEmail("springno6@spring.com");
 
         dao.update(user1);
 
