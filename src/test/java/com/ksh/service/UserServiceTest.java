@@ -32,7 +32,10 @@ import static org.junit.Assert.fail;
 @ContextConfiguration(locations = {"classpath:WEB-INF/spring/appServlet/servlet-context.xml", "classpath:WEB-INF/spring/root-context.xml", "/applicationContext.xml"})
 public class UserServiceTest {
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
+
+    @Autowired
+    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -74,7 +77,7 @@ public class UserServiceTest {
         }
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);;
+        userServiceImpl.setMailSender(mockMailSender);
 
         userService.upgradeGrades();
 
@@ -121,9 +124,13 @@ public class UserServiceTest {
     public void upgradeAllOrNothing() throws Exception{
         UserServiceImpl testUserService = new TestUserServiceImpl(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
-        testUserService.setDataSource(this.dataSource);
-        testUserService.setTransactionManager(this.transactionManager);
         testUserService.setMailSender(this.mailSender);
+//        testUserService.setDataSource(this.dataSource);
+//        testUserService.setTransactionManager(this.transactionManager);
+
+        UserServiceTx userServiceTx = new UserServiceTx();
+        userServiceTx.setTransactionManager(this.transactionManager);
+        userServiceTx.setUserService(testUserService);
 
         userDao.deleteAll();
         for(User user : users){
@@ -131,7 +138,8 @@ public class UserServiceTest {
         }
 
         try{
-            testUserService.upgradeGrades();
+//            testUserService.upgradeGrades();
+            userServiceTx.upgradeGrades();
             fail("TestUserServiceException expected");
         }catch(TestUserServiceException ex){
 

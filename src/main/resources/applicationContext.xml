@@ -12,11 +12,13 @@
     <bean id="userGradeUpgradePolicyAtNormal" class="com.ksh.policy.UserGradeUpgradePolicyAtNormal"/>
     <bean id="userGradeUpgradePolicyAtEvent" class="com.ksh.policy.UserGradeUpgradePolicyAtEvent"/>
 
-    <bean id="userService" class="com.ksh.service.UserServiceImpl">
-        <property name="userDao" ref="userDao"/>
-<!--        <property name="userGradeUpgradePolicy" ref="userGradeUpgradePolicyAtEvent"/>-->
-        <property name="dataSource" ref="dataSource"/>
+    <bean id="userService" class="com.ksh.service.UserServiceTx">
         <property name="transactionManager" ref="transactionManager"/>
+        <property name="userService" ref="userServiceImpl" />
+    </bean>
+
+    <bean id="userServiceImpl" class="com.ksh.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
 

@@ -12,7 +12,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import javax.sql.DataSource;
 import java.util.List;
 
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 
@@ -45,23 +45,6 @@ public class UserServiceImpl {
     }
 
     public void upgradeGrades() {
-        // DataSourceTransactionManager ->  JdbcTemplete에서 사용될 수 있는 방식으로 트랜잭션을 관리해준다.
-        //PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
-        // 트랜잭션 매니저가 필요에 따라 DB 커넥션도 같이 가져온다.
-        // 트랜잭션 시작
-        TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
-
-        try {
-            upgradeGradesInternal();
-
-            this.transactionManager.commit(status);
-        }catch(Exception e){
-            this.transactionManager.rollback(status);
-            throw e;
-        }
-    }
-
-    private void upgradeGradesInternal() {
         List<User> users = userDao.getAll();
 
         for (User user : users) {
