@@ -15,4 +15,9 @@ public class HelloTarget implements Hello{
     public String sayThankYou(String name) {
         return "Thank You " + name;
     }
+
+    @Override
+    public int countPlus(int before) {
+        return before + 1;
+    }
 }

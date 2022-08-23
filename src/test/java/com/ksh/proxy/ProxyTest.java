@@ -6,6 +6,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.lang.reflect.Proxy;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -24,5 +26,13 @@ public class ProxyTest {
         assertThat(proxyHello.sayHello("Toby"), is("HELLO TOBY"));
         assertThat(proxyHello.sayHi("Toby"), is("HI TOBY"));
         assertThat(proxyHello.sayThankYou("Toby"), is("THANK YOU TOBY"));
+
+        Hello proxiedHello = (Hello) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Hello.class}, new UppercaseHandler(new HelloTarget()));
+        assertThat(proxiedHello.sayHello("Toby"), is("HELLO TOBY"));
+        assertThat(proxiedHello.sayHi("Toby"), is("HI TOBY"));
+        assertThat(proxiedHello.sayThankYou("Toby"), is("THANK YOU TOBY"));
+        assertThat(proxiedHello.countPlus(10), is(11));
     }
+
+
 }

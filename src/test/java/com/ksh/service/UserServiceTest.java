@@ -3,6 +3,7 @@ package com.ksh.service;
 import com.ksh.dao.UserDao;
 import com.ksh.domain.Grade;
 import com.ksh.domain.User;
+import com.ksh.proxy.TransactionHandler;
 import com.sun.mail.iap.Argument;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,6 +23,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import sun.java2d.pipe.SpanShapeRenderer;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +39,9 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:WEB-INF/spring/appServlet/servlet-context.xml", "classpath:WEB-INF/spring/root-context.xml", "/applicationContext.xml"})
 public class UserServiceTest {
+    @Autowired
+    ApplicationContext context;
+
     @Autowired
     UserService userService;
 
@@ -179,27 +185,77 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeAllOrNothing() throws Exception{
+    @DirtiesContext
+    public void upgradeAllOrNothing() throws Exception {
+//        UserServiceImpl testUserService = new TestUserServiceImpl(users.get(3).getId());
+//        testUserService.setUserDao(this.userDao);
+//        testUserService.setMailSender(this.mailSender);
+////        testUserService.setDataSource(this.dataSource);
+////        testUserService.setTransactionManager(this.transactionManager);
+//
+//        UserServiceTx userServiceTx = new UserServiceTx();
+//        userServiceTx.setTransactionManager(this.transactionManager);
+//        userServiceTx.setUserService(testUserService);
+//
+//        userDao.deleteAll();
+//        for(User user : users){
+//            userDao.add(user);
+//        }
+//
+//        try{
+////            testUserService.upgradeGrades();
+//            userServiceTx.upgradeGrades();
+//            fail("TestUserServiceException expected");
+//        }catch(TestUserServiceException ex){
+//
+//        }
+//
+//        checkGradeUpgraded(users.get(1), false);
+
+//        UserServiceImpl testUserService = new TestUserServiceImpl(users.get(3).getId());
+//        testUserService.setUserDao(this.userDao);
+//        testUserService.setMailSender(this.mailSender);
+//
+//        TransactionHandler txHandler = new TransactionHandler();
+//        txHandler.setTarget(testUserService);
+//        txHandler.setTransactionManager(transactionManager);
+//        txHandler.setPattern("upgradeGrades");
+//
+//        UserService txUserService = (UserService) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{UserService.class}, txHandler);
+//
+//        userDao.deleteAll();
+//        for (User user : users) {
+//            userDao.add(user);
+//        }
+//
+//        try {
+////            testUserService.upgradeGrades();
+//            txUserService.upgradeGrades();
+//            fail("TestUserServiceException expected");
+//        } catch (TestUserServiceException ex) {
+//
+//        }
+//
+//        checkGradeUpgraded(users.get(1), false);
+
         UserServiceImpl testUserService = new TestUserServiceImpl(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
         testUserService.setMailSender(this.mailSender);
-//        testUserService.setDataSource(this.dataSource);
-//        testUserService.setTransactionManager(this.transactionManager);
 
-        UserServiceTx userServiceTx = new UserServiceTx();
-        userServiceTx.setTransactionManager(this.transactionManager);
-        userServiceTx.setUserService(testUserService);
+        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        txProxyFactoryBean.setTarget(testUserService);
+
+        UserService txUserService = (UserService)txProxyFactoryBean.getObject();
 
         userDao.deleteAll();
-        for(User user : users){
+        for (User user : users) {
             userDao.add(user);
         }
 
-        try{
-//            testUserService.upgradeGrades();
-            userServiceTx.upgradeGrades();
+        try {
+            txUserService.upgradeGrades();
             fail("TestUserServiceException expected");
-        }catch(TestUserServiceException ex){
+        } catch (TestUserServiceException ex) {
 
         }
 
