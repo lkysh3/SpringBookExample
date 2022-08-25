@@ -12,16 +12,20 @@
     <bean id="userGradeUpgradePolicyAtNormal" class="com.ksh.policy.UserGradeUpgradePolicyAtNormal"/>
     <bean id="userGradeUpgradePolicyAtEvent" class="com.ksh.policy.UserGradeUpgradePolicyAtEvent"/>
 
-<!--    <bean id="userService" class="com.ksh.service.UserServiceTx">-->
+<!--    <bean id="userService" class="com.ksh.service.TxProxyFactoryBean">-->
+<!--        <property name="target" ref="userServiceImpl"/>-->
 <!--        <property name="transactionManager" ref="transactionManager"/>-->
-<!--        <property name="userService" ref="userServiceImpl" />-->
+<!--        <property name="pattern" value="upgradeGrades"/>-->
+<!--        <property name="serviceInterface" value="com.ksh.service.UserService"/>-->
 <!--    </bean>-->
 
-    <bean id="userService" class="com.ksh.service.TxProxyFactoryBean">
+    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="target" ref="userServiceImpl"/>
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="pattern" value="upgradeGrades"/>
-        <property name="serviceInterface" value="com.ksh.service.UserService"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionAdvisor</value>
+            </list>
+        </property>
     </bean>
 
     <bean id="userServiceImpl" class="com.ksh.service.UserServiceImpl">
@@ -39,6 +43,19 @@
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="transactionAdvice" class="com.ksh.proxy.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+        <property name="mappedName" value="upgrade*"/>
+    </bean>
+
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice"/>
+        <property name="pointcut" ref="transactionPointcut"/>
     </bean>
 
 <!--    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">-->
