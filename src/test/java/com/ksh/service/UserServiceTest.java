@@ -3,14 +3,11 @@ package com.ksh.service;
 import com.ksh.dao.UserDao;
 import com.ksh.domain.Grade;
 import com.ksh.domain.User;
-import com.ksh.proxy.TransactionHandler;
-import com.sun.mail.iap.Argument;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -21,10 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +42,7 @@ public class UserServiceTest {
     UserService userService;
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserService testUserService;
 
     @Autowired
     UserDao userDao;
@@ -128,29 +123,6 @@ public class UserServiceTest {
         assertThat(request.size(), is(2));
         assertThat(request.get(0), is(users.get(1).getEmail()));
         assertThat(request.get(1), is(users.get(3).getEmail()));
-
-
-//        userDao.deleteAll();
-//
-//        for (User user : users) {
-//            userDao.add(user);
-//        }
-//
-//        MockMailSender mockMailSender = new MockMailSender();
-//        userServiceImpl.setMailSender(mockMailSender);
-//
-//        userService.upgradeGrades();
-//
-//        checkGradeUpgraded(users.get(0), false);
-//        checkGradeUpgraded(users.get(1), true);
-//        checkGradeUpgraded(users.get(2), false);
-//        checkGradeUpgraded(users.get(3), true);
-//        checkGradeUpgraded(users.get(4), false);
-//
-//        List<String> request = mockMailSender.getRequests();
-//        assertThat(request.size(), is(2));
-//        assertThat(request.get(0), is(users.get(1).getEmail()));
-//        assertThat(request.get(1), is(users.get(3).getEmail()));
     }
 
     private void checkGradeUpgraded(User user, boolean upgraded){
@@ -186,24 +158,22 @@ public class UserServiceTest {
     }
 
     @Test
-    @DirtiesContext
+    public void advisorAutoProxyCreator() throws NoSuchMethodException{
+        // testUserService가 프록시인지 확인
+        assertThat(testUserService, instanceOf(java.lang.reflect.Proxy.class));
+
+        //System.out.println(Target.class.getMethod("minus", int.class, int.class));
+    }
+
+    @Test
     public void upgradeAllOrNothing() throws Exception {
-        UserServiceImpl testUserService = new TestUserServiceImpl(users.get(3).getId());
-        testUserService.setUserDao(this.userDao);
-        testUserService.setMailSender(this.mailSender);
-
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-
-        UserService txUserService = (UserService)txProxyFactoryBean.getObject();
-
         userDao.deleteAll();
         for (User user : users) {
             userDao.add(user);
         }
 
         try {
-            txUserService.upgradeGrades();
+            this.testUserService.upgradeGrades();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException ex) {
 
@@ -212,12 +182,8 @@ public class UserServiceTest {
         checkGradeUpgraded(users.get(1), false);
     }
 
-    static class TestUserServiceImpl extends UserServiceImpl {
-        private String id;
-
-        private TestUserServiceImpl(String id){
-            this.id = id;
-        }
+    static class TestUserService extends UserServiceImpl {
+        private String id = "madnite1";
 
         protected void upgradeGrade(User user){
             if(user.getId().equals(this.id)) {

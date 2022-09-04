@@ -21,9 +21,11 @@ public class TransactionAdvice implements MethodInterceptor {
         try {
             Object ret = methodInvocation.proceed();
             this.transactionManager.commit(status);
+            System.out.println("Transaction Commit");
             return ret;
         }catch(RuntimeException e){
             this.transactionManager.rollback(status);
+            System.out.println("Transaction Rollback");
             throw e;
         }
     }

@@ -10,7 +10,7 @@ public class DummyMailSender implements MailSender {
 
     @Override
     public void send(SimpleMailMessage simpleMailMessage) throws MailException {
-        System.out.println("From : " + simpleMailMessage.getFrom());
+        System.out.println("From : " + simpleMailMessage.getTo()[0]);
         System.out.println("To : " + simpleMailMessage.getFrom());
         System.out.println("Subject : " + simpleMailMessage.getSubject());
         System.out.println("Text : " + simpleMailMessage.getText());
