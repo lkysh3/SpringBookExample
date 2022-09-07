@@ -20,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.sql.DataSource;
@@ -185,7 +186,8 @@ public class UserServiceTest {
         checkGradeUpgraded(users.get(1), false);
     }
 
-    @Test(expected=TransientDataAccessException.class)
+    //@Test(expected=TransientDataAccessException.class)
+    @Test
     public void readOnlyTransactionAttribute() {
         try {
             testUserService.getAll();

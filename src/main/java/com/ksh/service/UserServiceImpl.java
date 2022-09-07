@@ -7,11 +7,13 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.util.List;
 
+@Transactional(timeout = 10)
 public class UserServiceImpl implements UserService {
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
@@ -61,6 +63,7 @@ public class UserServiceImpl implements UserService {
 
 //        userGradeUpgradePolicy.upgradeGrade(user);
     }
+
 
     public void add(User user) {
         if(user.getGrade() == null){

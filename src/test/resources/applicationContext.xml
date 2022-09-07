@@ -38,17 +38,19 @@
 <!--        <property name="transactionManager" ref="transactionManager"/>-->
 <!--    </bean>-->
 
-    <tx:advice id="transactionAdvice">
-        <tx:attributes>
-            <tx:method name="get*" read-only="true" />
-            <tx:method name="*"/>
-        </tx:attributes>
-    </tx:advice>
+<!--    <tx:advice id="transactionAdvice">-->
+<!--        <tx:attributes>-->
+<!--            <tx:method name="get*" read-only="true" />-->
+<!--            <tx:method name="*"/>-->
+<!--        </tx:attributes>-->
+<!--    </tx:advice>-->
 
     <!--        포인트컷 공유 안할때 태그 결합 가능, 포인트컷을 여러개의 어드바이저와 공유하려면 aop:pointcut 태그로 등록해야 한다.-->
-    <aop:config>
-        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-    </aop:config>
+<!--    <aop:config>-->
+<!--        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>-->
+<!--    </aop:config>-->
+
+    <tx:annotation-driven />
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
