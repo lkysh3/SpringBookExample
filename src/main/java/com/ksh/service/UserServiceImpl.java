@@ -70,6 +70,29 @@ public class UserServiceImpl implements UserService {
         userDao.add(user);
     }
 
+    // UserService를 거쳐 userDao의 기능을 이용한다.
+    // UserService에 트랜잭션 경계를 설정할 경우 UserDao의 데이터 조작에 모두 트랜잭션을 적용할 수 있다.
+    // 필요한 부가로직을 추가할 수 있다.
+    @Override
+    public User get(String id) {
+        return userDao.get(id);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userDao.getAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        userDao.deleteAll();
+    }
+
+    @Override
+    public void update(User user) {
+        userDao.update(user);
+    }
+
     private boolean canUpgradeLevel(User user){
         Grade currentGrade = user.getGrade();
         switch(currentGrade){
@@ -94,23 +117,5 @@ public class UserServiceImpl implements UserService {
         mailMessage.setText("사용자님의 등급이 " + user.getGrade().name() + "로 업그레이드 되었습니다.");
 
         this.mailSender.send(mailMessage);
-
-//        Properties props = new Properties();
-//        props.put("mail.smtp.host", "mail.ksug.org");
-//        Session s = Session.getInstance(props, null);
-//        MimeMessage message = new MimeMessage(s);
-//
-//        try{
-//            message.setFrom(new InternetAddress("useradmin@ksug.org"));
-//            message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
-//            message.setSubject("Upgrade 안내");
-//            message.setText("사용자님의 등급이 " + user.getGrade().name() + "로 업그레이드 되었습니다.");
-//
-//            Transport.send(message);
-//        }catch(AddressException e){
-//            throw new RuntimeException(e);
-//        }catch(MessagingException e){
-//            throw new RuntimeException(e);
-//        }
     }
 }

@@ -3,6 +3,7 @@ package com.ksh.service;
 import com.ksh.dao.UserDao;
 import com.ksh.domain.Grade;
 import com.ksh.domain.User;
+import org.aspectj.lang.annotation.Aspect;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -182,6 +185,15 @@ public class UserServiceTest {
         checkGradeUpgraded(users.get(1), false);
     }
 
+    @Test(expected=TransientDataAccessException.class)
+    public void readOnlyTransactionAttribute() {
+        try {
+            testUserService.getAll();
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
     static class TestUserService extends UserServiceImpl {
         private String id = "madnite1";
 
@@ -190,6 +202,13 @@ public class UserServiceTest {
                 throw new TestUserServiceException();
             }
             super.upgradeGrade(user);
+        }
+
+        public List<User> getAll(){
+            for(User user : super.getAll()){
+                super.update(user);
+            }
+            return null;
         }
     }
 
