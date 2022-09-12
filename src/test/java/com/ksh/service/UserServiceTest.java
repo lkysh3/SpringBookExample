@@ -16,12 +16,16 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -37,6 +41,8 @@ import static org.mockito.Mockito.*;
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
+@Rollback(false)
 @ContextConfiguration(locations = {"classpath:WEB-INF/spring/appServlet/servlet-context.xml", "classpath:WEB-INF/spring/root-context.xml", "/applicationContext.xml"})
 public class UserServiceTest {
     @Autowired
@@ -194,6 +200,64 @@ public class UserServiceTest {
         }catch(Exception ex){
             System.out.println(ex.getMessage());
         }
+    }
+
+    @Test
+    public void transactionSync(){
+//        userService.deleteAll();
+//        // deleteAll 트랜잭션 종료
+//
+//        userService.add(users.get(0));
+//        // add 트랜잭션 종료
+//        userService.add(users.get(1));
+//        // add 트랜잭션 종료
+//        // 3개의 트랜잭션이 생성되었다.
+
+//        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+//        // 오라클 DB를 사용하는 경우 readonly 속성은 무시된다.
+//        txDefinition.setReadOnly(true);
+//        // 타임아웃으로 테스트. deleteAll이 새로 트랜잭션을 생성하지 않고 생성된 트랜잭션에 참여했기 때문에 타임아웃이 적용된다.
+//        txDefinition.setTimeout(5);
+//        // 트랜잭션 시작
+//        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+//
+//        // 이미 트랜잭션이 시작중이고 전파속성이 REQUIRED 이므로 현재 트랜잭션에 참여
+//        userService.deleteAll();
+//
+//        // 이미 트랜잭션이 시작중이고 전파속성이 REQUIRED 이므로 현재 트랜잭션에 참여
+//        userService.add(users.get(0));
+//        // 이미 트랜잭션이 시작중이고 전파속성이 REQUIRED 이므로 현재 트랜잭션에 참여
+//        userService.add(users.get(1));
+//
+//        transactionManager.commit(txStatus);
+//        // 트랜잭션 종료. 1개의 트랜잭션만 생성되어 작업이 완료됨.
+
+
+//        // 트랜잭션 시작전에 0으로 초기화
+//        userService.deleteAll();
+//        assertThat(userDao.getCount(), is(0));
+//
+//        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+//        // 트랜잭션 시작
+//        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+//
+//        // 이미 트랜잭션이 시작중이고 전파속성이 REQUIRED 이므로 현재 트랜잭션에 참여
+//        userService.add(users.get(0));
+//        // 이미 트랜잭션이 시작중이고 전파속성이 REQUIRED 이므로 현재 트랜잭션에 참여
+//        userService.add(users.get(1));
+//
+//        assertThat(userDao.getCount(), is(2));
+//
+//        transactionManager.rollback(txStatus);
+//
+//        // 트랜잭션을 롤백했으니까 0으로 돌아가야 한다.
+//        assertThat(userDao.getCount(), is(0));
+
+
+        // 테스트 메소드가 트랜잭션의 경계가 되어 메소드에서 실행되는 내용은 동일한 트랜잭션으로 실행된다.
+        userService.deleteAll();
+        userService.add(users.get(0));
+        userService.add(users.get(1));
     }
 
     static class TestUserService extends UserServiceImpl {
