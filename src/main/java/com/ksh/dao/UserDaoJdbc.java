@@ -3,6 +3,7 @@ package com.ksh.dao;
 import com.ksh.domain.Grade;
 import com.ksh.domain.User;
 import com.ksh.exception.DuplicateUserIdException;
+import com.ksh.service.sql.SqlService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -13,6 +14,17 @@ import java.util.List;
 
 public class UserDaoJdbc implements UserDao {
     private JdbcTemplate jdbcTemplate;
+//    private String sqlAdd;
+//    private String sqlGet;
+//    private String sqlGetAll;
+//    private String sqlDeleteAll;
+//    private String sqlGetCount;
+//    private String sqlUpdate;
+
+//    private Map<String, String > sqlMap;
+
+    private SqlService sqlService;
+
     private final RowMapper<User> userMapper = new RowMapper<User>() {
         @Override
         public User mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -35,30 +47,63 @@ public class UserDaoJdbc implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+//    public void setSqlAdd(String sqlAdd){
+//        this.sqlAdd = sqlAdd;
+//    }
+//
+//    public void setSqlGet(String sqlGet){
+//        this.sqlGet = sqlGet;
+//    }
+//
+//    public void setSqlGetAll(String sqlGetAll){
+//        this.sqlGetAll = sqlGetAll;
+//    }
+//
+//    public void setSqlDeleteAll(String sqlDeleteAll){
+//        this.sqlDeleteAll = sqlDeleteAll;
+//    }
+//
+//    public void setSqlGetCount(String sqlGetCount){
+//        this.sqlGetCount = sqlGetCount;
+//    }
+//
+//    public void setSqlUpdate(String sqlUpdate){
+//        this.sqlUpdate = sqlUpdate;
+//    }
+
+
+//    public void setSqlMap(Map<String, String> sqlMap){
+//        this.sqlMap = sqlMap;
+//    }
+
+    public void setSqlService(SqlService sqlService){
+        this.sqlService = sqlService;
+    }
+
     public void add(final User user) throws DuplicateUserIdException {
-        this.jdbcTemplate.update("insert into users(id, name, password, grade, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)",
+        this.jdbcTemplate.update(this.sqlService.getSql("userAdd"),
                 user.getId(), user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
     }
 
     public User get(String id) {
-        return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, userMapper);
+        return this.jdbcTemplate.queryForObject(this.sqlService.getSql("userGet"), new Object[]{id}, userMapper);
     }
 
     public List<User> getAll() {
-        return this.jdbcTemplate.query("select * from users order by id", userMapper);
+        return this.jdbcTemplate.query(this.sqlService.getSql("userGetAll"), userMapper);
     }
 
     public void deleteAll() {
-        this.jdbcTemplate.update("delete from users");
+        this.jdbcTemplate.update(this.sqlService.getSql("userDeleteAll"));
     }
 
     public int getCount() {
         // queryForInt는 Deprecated 되었음.
-        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+        return this.jdbcTemplate.queryForObject(this.sqlService.getSql("userGetCount"), Integer.class);
     }
 
     public void update(User user) {
-        this.jdbcTemplate.update("update users set name = ?, password = ?, grade = ?, login = ?, recommend = ? , email = ? where id = ?",
+        this.jdbcTemplate.update(this.sqlService.getSql("userUpdate"),
                 user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
     }
 }

@@ -3,15 +3,34 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
                            http://www.springframework.org/schema/tx
-                           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+                           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <bean id="userDao" class="com.ksh.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
+        <property name="sqlService" ref="sqlService"/>
+    </bean>
+
+<!--    <bean id="sqlService" class="com.ksh.service.sql.BaseSqlService">-->
+<!--        <property name="sqlReader" ref="sqlReader"/>-->
+<!--        <property name="sqlRegistry" ref="sqlRegistry"/>-->
+<!--    </bean>-->
+
+<!--    기본값을 갖는 서비스. DI 하지 않아도 미리 설정된(갖고있는) 기본값으로 동작한다.-->
+    <bean id="sqlService" class="com.ksh.service.sql.DefaultSqlService"></bean>
+
+    <bean id="sqlReader" class="com.ksh.service.sql.JaxbXmlSqlReader">
+        <property name="sqlmapFile" value="/sqlmap.xml"/>
+    </bean>
+
+    <bean id="sqlRegistry" class="com.ksh.service.sql.HashMapSqlRegistry">
     </bean>
 
     <bean id="userGradeUpgradePolicyAtNormal" class="com.ksh.policy.UserGradeUpgradePolicyAtNormal"/>
@@ -51,6 +70,7 @@
 <!--    </aop:config>-->
 
     <tx:annotation-driven />
+    <context:annotation-config />
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 

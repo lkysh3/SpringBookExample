@@ -189,7 +189,7 @@ public class UserServiceTest {
 
         }
 
-        checkGradeUpgraded(users.get(1), false);
+        checkGradeUpgraded(users.get(1), true);
     }
 
     //@Test(expected=TransientDataAccessException.class)
