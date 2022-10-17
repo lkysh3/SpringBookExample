@@ -65,6 +65,15 @@
             <version>4.3.0.RELEASE</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-oxm -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+            <version>4.3.30.RELEASE</version>
+        </dependency>
+
+
+
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>

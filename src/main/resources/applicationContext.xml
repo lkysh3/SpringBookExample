@@ -3,15 +3,34 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
                            http://www.springframework.org/schema/tx
-                           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+                           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <bean id="userDao" class="com.ksh.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
+        <property name="sqlService" ref="sqlService"/>
+    </bean>
+
+    <!--    <bean id="sqlService" class="com.ksh.service.sql.BaseSqlService">-->
+    <!--        <property name="sqlReader" ref="sqlReader"/>-->
+    <!--        <property name="sqlRegistry" ref="sqlRegistry"/>-->
+    <!--    </bean>-->
+
+    <!--    기본값을 갖는 서비스. DI 하지 않아도 미리 설정된(갖고있는) 기본값으로 동작한다.-->
+    <bean id="sqlService" class="com.ksh.service.sql.DefaultSqlService"></bean>
+
+    <bean id="sqlReader" class="com.ksh.service.sql.JaxbXmlSqlReader">
+        <property name="sqlmapFile" value="/sqlmap.xml"/>
+    </bean>
+
+    <bean id="sqlRegistry" class="com.ksh.service.sql.HashMapSqlRegistry">
     </bean>
 
     <bean id="userGradeUpgradePolicyAtNormal" class="com.ksh.policy.UserGradeUpgradePolicyAtNormal"/>
@@ -34,33 +53,12 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <!--    <bean id="transactionAdvice" class="com.ksh.proxy.TransactionAdvice">-->
-    <!--        <property name="transactionManager" ref="transactionManager"/>-->
-    <!--    </bean>-->
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="com.ksh.service.jaxb"/>
+    </bean>
 
-<!--    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">-->
-<!--        <tx:attributes>-->
-<!--            <tx:method name="get*" read-only="true" timeout="30"/>-->
-<!--            <tx:method name="*" read-only="true" timeout="30"/>-->
-<!--        </tx:attributes>-->
-<!--    </tx:advice>-->
-
-<!--    <bean id="transactionAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">-->
-<!--        <property name="transactionManager" ref="transactionManager"/>-->
-<!--        <property name="transactionAttributes">-->
-<!--            <props>-->
-<!--                <prop key="get*">PROPAGATION_REQUIRED, readOnly</prop>-->
-<!--                <prop key="*">PROPAGATION_REQUIRED</prop>-->
-<!--            </props>-->
-<!--        </property>-->
-<!--    </bean>-->
-
-    <!--        포인트컷 공유 안할때 태그 결합 가능, 포인트컷을 여러개의 어드바이저와 공유하려면 aop:pointcut 태그로 등록해야 한다.-->
-<!--    <aop:config>-->
-<!--        <aop:pointcut id="transactionPointcut" expression="bean(*Service)"/>-->
-<!--&lt;!&ndash;        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>&ndash;&gt;-->
-<!--        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut"/>-->
-<!--    </aop:config>-->
+    <tx:annotation-driven />
+    <context:annotation-config />
 
     <!--    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>-->
 

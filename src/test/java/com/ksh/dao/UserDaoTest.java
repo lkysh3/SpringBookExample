@@ -43,7 +43,7 @@ public class UserDaoTest {
     public void setup(){
         // xml을 이용한 방식
         // xml 파일을 구성정보로 사용한다.
-//        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+//        ApplicationContext context = new GenericXmlApplicationContext("test-applicationContext.xml");
 
         // DaoFactory를 사용하는 방식
         // Configuration 어노테이션이 붙은 클래스를 구성정보로 사용한다.

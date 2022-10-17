@@ -24,14 +24,28 @@
 <!--    </bean>-->
 
 <!--    기본값을 갖는 서비스. DI 하지 않아도 미리 설정된(갖고있는) 기본값으로 동작한다.-->
-    <bean id="sqlService" class="com.ksh.service.sql.DefaultSqlService"></bean>
+<!--    <bean id="sqlService" class="com.ksh.service.sql.DefaultSqlService"></bean>-->
 
-    <bean id="sqlReader" class="com.ksh.service.sql.JaxbXmlSqlReader">
-        <property name="sqlmapFile" value="/sqlmap.xml"/>
+    <bean id="sqlService" class="com.ksh.service.sql.OxmSqlService">
+        <property name="unmarshaller" ref="unmarshaller"/>
+<!--        <property name="sqlMap" value="classpath:sqlmap.xml"/>-->
+<!--        PC 파일 시스템의 루트 디렉토리부터 경로 지정(프로젝트 기준 아님)-->
+        <property name="sqlMap" value="file:/Users/KwakSeongHun/Desktop/Spring/SpringBookExample/src/test/resources/sqlmap.xml"/>
+<!--        <property name="sqlMap" value="file:/Users/KwakSeongHun/Desktop/Spring/SpringBookExample/src/main/resources/sqlmap.xml"/>-->
+
+
     </bean>
 
-    <bean id="sqlRegistry" class="com.ksh.service.sql.HashMapSqlRegistry">
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="com.ksh.service.jaxb"/>
     </bean>
+
+<!--    <bean id="sqlReader" class="com.ksh.service.sql.JaxbXmlSqlReader">-->
+<!--        <property name="sqlmapFile" value="/sqlmap.xml"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="sqlRegistry" class="com.ksh.service.sql.HashMapSqlRegistry">-->
+<!--    </bean>-->
 
     <bean id="userGradeUpgradePolicyAtNormal" class="com.ksh.policy.UserGradeUpgradePolicyAtNormal"/>
     <bean id="userGradeUpgradePolicyAtEvent" class="com.ksh.policy.UserGradeUpgradePolicyAtEvent"/>
@@ -53,26 +67,12 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-<!--    <bean id="transactionAdvice" class="com.ksh.proxy.TransactionAdvice">-->
-<!--        <property name="transactionManager" ref="transactionManager"/>-->
-<!--    </bean>-->
 
-<!--    <tx:advice id="transactionAdvice">-->
-<!--        <tx:attributes>-->
-<!--            <tx:method name="get*" read-only="true" />-->
-<!--            <tx:method name="*"/>-->
-<!--        </tx:attributes>-->
-<!--    </tx:advice>-->
-
-    <!--        포인트컷 공유 안할때 태그 결합 가능, 포인트컷을 여러개의 어드바이저와 공유하려면 aop:pointcut 태그로 등록해야 한다.-->
-<!--    <aop:config>-->
-<!--        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>-->
-<!--    </aop:config>-->
 
     <tx:annotation-driven />
     <context:annotation-config />
 
-    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+<!--    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>-->
 
     <bean id="testUserService" class="com.ksh.service.UserServiceTest$TestUserService" parent="userService"/>
     <bean id="mailSender" class="com.ksh.mail.DummyMailSender"/>
