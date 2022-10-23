@@ -4,6 +4,7 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                            http://www.springframework.org/schema/aop
@@ -11,7 +12,9 @@
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
                            http://www.springframework.org/schema/context
-                           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                            http://www.springframework.org/schema/jdbc
+                            http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd">
 
     <bean id="userDao" class="com.ksh.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
@@ -30,10 +33,15 @@
         <property name="unmarshaller" ref="unmarshaller"/>
 <!--        <property name="sqlMap" value="classpath:sqlmap.xml"/>-->
 <!--        PC 파일 시스템의 루트 디렉토리부터 경로 지정(프로젝트 기준 아님)-->
-        <property name="sqlMap" value="file:/Users/KwakSeongHun/Desktop/Spring/SpringBookExample/src/test/resources/sqlmap.xml"/>
-<!--        <property name="sqlMap" value="file:/Users/KwakSeongHun/Desktop/Spring/SpringBookExample/src/main/resources/sqlmap.xml"/>-->
+<!--        <property name="sqlMap" value="file:/Users/KwakSeongHun/Desktop/Spring/SpringBookExample/src/test/resources/sqlmap.xml"/>-->
+        <property name="sqlMap" value="file:/Users/KwakSeongHun/Desktop/Spring/SpringBookExample/src/main/resources/sqlmap.xml"/>
 
+        <property name="sqlRegistry" ref="sqlRegistry"/>
 
+    </bean>
+
+    <bean id="sqlRegistry" class="com.ksh.service.sql.EmbeddedDBSqlRegistry">
+        <property name="dataSource" ref="embeddedDatabase"/>
     </bean>
 
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
@@ -67,6 +75,9 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
+        <jdbc:script location="classpath:/sqlRegistrySchema.sql"/>
+    </jdbc:embedded-database>
 
 
     <tx:annotation-driven />
