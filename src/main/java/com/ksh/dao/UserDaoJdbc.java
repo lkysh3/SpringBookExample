@@ -4,14 +4,18 @@ import com.ksh.domain.Grade;
 import com.ksh.domain.User;
 import com.ksh.exception.DuplicateUserIdException;
 import com.ksh.service.sql.SqlService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Repository
 public class UserDaoJdbc implements UserDao {
     private JdbcTemplate jdbcTemplate;
 //    private String sqlAdd;
@@ -23,6 +27,7 @@ public class UserDaoJdbc implements UserDao {
 
 //    private Map<String, String > sqlMap;
 
+    @Autowired
     private SqlService sqlService;
 
     private final RowMapper<User> userMapper = new RowMapper<User>() {
@@ -43,6 +48,7 @@ public class UserDaoJdbc implements UserDao {
     public UserDaoJdbc() {
     }
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -76,9 +82,9 @@ public class UserDaoJdbc implements UserDao {
 //        this.sqlMap = sqlMap;
 //    }
 
-    public void setSqlService(SqlService sqlService){
-        this.sqlService = sqlService;
-    }
+//    public void setSqlService(SqlService sqlService){
+//        this.sqlService = sqlService;
+//    }
 
     public void add(final User user) throws DuplicateUserIdException {
         this.jdbcTemplate.update(this.sqlService.getSql("userAdd"),

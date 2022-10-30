@@ -1,31 +1,27 @@
 package com.ksh.service;
 
+import com.ksh.configuration.AppContext;
 import com.ksh.dao.UserDao;
 import com.ksh.domain.Grade;
 import com.ksh.domain.User;
-import org.aspectj.lang.annotation.Aspect;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.dao.TransientDataAccessException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -41,12 +37,14 @@ import static org.mockito.Mockito.*;
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles("test")
 @Transactional
 @Rollback(false)
-@ContextConfiguration(locations = {"classpath:WEB-INF/spring/appServlet/servlet-context.xml", "classpath:WEB-INF/spring/root-context.xml", "/test-applicationContext.xml"})
+//@ContextConfiguration(locations = {"classpath:WEB-INF/spring/appServlet/servlet-context.xml", "classpath:WEB-INF/spring/root-context.xml", "/test-applicationContext.xml"})
+@ContextConfiguration(classes= AppContext.class)
 public class UserServiceTest {
     @Autowired
-    ApplicationContext context;
+    org.springframework.context.ApplicationContext context;
 
     @Autowired
     UserService userService;
@@ -260,7 +258,7 @@ public class UserServiceTest {
         userService.add(users.get(1));
     }
 
-    static class TestUserService extends UserServiceImpl {
+    public static class TestUserService extends UserServiceImpl {
         private String id = "madnite1";
 
         protected void upgradeGrade(User user){

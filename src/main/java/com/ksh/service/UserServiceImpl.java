@@ -3,8 +3,11 @@ package com.ksh.service;
 import com.ksh.dao.UserDao;
 import com.ksh.domain.Grade;
 import com.ksh.domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,15 +17,18 @@ import javax.sql.DataSource;
 import java.util.List;
 
 //@Transactional
+@Service("userService")
 public class UserServiceImpl implements UserService {
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 
+    @Autowired
     UserDao userDao;
 //    UserGradeUpgradePolicy userGradeUpgradePolicy;
-    PlatformTransactionManager transactionManager;
+//    PlatformTransactionManager transactionManager;
 
-    private DataSource dataSource;
+//    private DataSource dataSource;
+    @Autowired
     private MailSender mailSender;
 
 
@@ -34,13 +40,13 @@ public class UserServiceImpl implements UserService {
 //        this.userGradeUpgradePolicy = userGradeUpgradePolicy;
 //    }
 
-    public void setDataSource(DataSource dataSource){
-        this.dataSource = dataSource;
-    }
-
-    public void setTransactionManager(PlatformTransactionManager transactionManager){
-        this.transactionManager = transactionManager;
-    }
+//    public void setDataSource(DataSource dataSource){
+//        this.dataSource = dataSource;
+//    }
+//
+//    public void setTransactionManager(PlatformTransactionManager transactionManager){
+//        this.transactionManager = transactionManager;
+//    }
 
     public void setMailSender(MailSender mailSender){
         this.mailSender = mailSender;
